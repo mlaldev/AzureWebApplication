@@ -49,7 +49,6 @@ public class AuthenticationController {
        }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/current-user")
     public User getCurrentUser(Principal principal){
         return (User) userDetailsServiceimpl.loadUserByUsername(principal.getName());
