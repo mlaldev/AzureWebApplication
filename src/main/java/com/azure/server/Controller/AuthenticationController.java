@@ -21,7 +21,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping
-@CrossOrigin("*")
 public class AuthenticationController {
 
     @Autowired
