@@ -2,15 +2,19 @@ package com.azure.server.Controller;
 
 
 
+import com.azure.server.Helper.AzureBlobService;
 import com.azure.server.Model.Book;
 import com.azure.server.Services.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -21,12 +25,18 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+    @Autowired
+    private AzureBlobService azureBlobAdapter;
 
 
     //Add New Book
-    @PostMapping("/add-new-book")
+    @PostMapping(value = "/add-new-book",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Book> addNewBook(@RequestBody Book bookDto) {
+    public ResponseEntity<Book> addNewBook
+    (@RequestPart("book") Book bookDto, @RequestPart("imageFile") MultipartFile file ) throws IOException {
+
+        String fileName = azureBlobAdapter.upload(file);
+
         return new ResponseEntity<>(bookService.addNewBook(bookDto),HttpStatus.CREATED);
     }
 
@@ -43,9 +53,6 @@ public class BookController {
     }
 
     //Get All Books
-    /**
-     * @return
-     */
     @GetMapping("/book-list")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
